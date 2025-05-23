@@ -1,0 +1,35 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  resourceGroupName: 'devops-rg'
+  location: 'westeurope'
+  bicepFile: 'static-site-pipeline/devops-python-app/main.bicep'
+  appFolder: 'static-site-pipeline/devops-python-app/flask-app'
+
+steps:
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'service-connection'
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      echo "Creating resource group..."
+      az group create --name ${{ variables.resourceGroupName }} --location ${{ variables.location }}
+
+      echo "Deploying Bicep file..."
+      az deployment group create \
+        --resource-group ${{ variables.resourceGroupName }} \
+        --template-file ${{ variables.bicepFile }}
+
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'service-connection'
+    appType: 'webAppLinux'
+    appName: '$(appName)' # You will set this in the next step
+    package: '$(appFolder)'
