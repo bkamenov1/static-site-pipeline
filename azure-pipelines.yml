@@ -1,19 +1,25 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+- main  # or your default branch
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
+
+variables:
+  STORAGE_ACCOUNT: mystaticsite123456
+  RESOURCE_GROUP: devops-rg
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: 'YOUR_SERVICE_CONNECTION_NAME'  # Replace with your Azure DevOps service connection name
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      echo "Uploading static site files to storage account..."
+      
+      # Get storage account key
+      STORAGE_KEY=$(az storage account keys list --resource-group $RESOURCE_GROUP --account-name $STORAGE_ACCOUNT --query '[0].value' -o tsv)
+      
+      # Upload files to $web container (static website container)
+      az storage blob upload-batch --account-name $STORAGE_ACCOUNT --account-key $STORAGE_KEY --source $(Build.SourcesDirectory) --destination '$web'
+  displayName: 'Upload static website files to Azure Storage'
