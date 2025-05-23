@@ -11,7 +11,7 @@ variables:
 steps:
 - task: AzureCLI@2
   inputs:
-    azureSubscription: 'YOUR_SERVICE_CONNECTION_NAME'  # Replace with your Azure DevOps service connection name
+    azureSubscription: 'service-connection'  # Replace with your Azure DevOps service connection name
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
