@@ -16,7 +16,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
 }
 
 resource webApp 'Microsoft.Web/sites@2022-03-01' = {
-  name: webAppName
+  name: 'my-flask-app-123'
   location: location
   kind: 'app,linux'
   properties: {
