@@ -31,5 +31,5 @@ steps:
   inputs:
     azureSubscription: 'service-connection'
     appType: 'webAppLinux'
-    appName: '$(appName)' # You will set this in the next step
+    appName: 'my-flask-app-123'
     package: '$(appFolder)'
