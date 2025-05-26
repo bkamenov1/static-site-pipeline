@@ -21,6 +21,6 @@ steps:
     inlineScript: |
       az deployment group create \
         --resource-group $(resourceGroupName) \
-        --template-file main.bicep \
+        --template-file tic-site-pipeline/devops-python-app/main.bicep \
         --parameters appName=$(appName) acrLoginServer=$(acrLoginServer) imageName=$(imageName)
     workingDirectory: '$(Build.SourcesDirectory)/devops-python-app/flask-app'
