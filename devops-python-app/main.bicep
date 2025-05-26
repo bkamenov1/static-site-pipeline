@@ -1,12 +1,13 @@
 param location string = resourceGroup().location
-param appServicePlanName string = 'devops-python-plan'
-param webAppName string = 'devops-python-webapp-${uniqueString(resourceGroup().id)}'
+param appName string = 'my-flask-app-123'
+param acrLoginServer string = 'myacrboyan123.azurecr.io'
+param imageName string = 'myflaskapp:v1'
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
-  name: appServicePlanName
+resource plan 'Microsoft.Web/serverfarms@2022-09-01' = {
+  name: '${appName}-plan'
   location: location
   sku: {
-    name: 'B1' // Free = F1, B1 = Basic (avoid Free if you want pipelines to work consistently)
+    name: 'B1'
     tier: 'Basic'
   }
   kind: 'linux'
@@ -15,17 +16,18 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
   }
 }
 
-resource webApp 'Microsoft.Web/sites@2022-03-01' = {
-  name: 'my-flask-app-123'
+resource webApp 'Microsoft.Web/sites@2022-09-01' = {
+  name: appName
   location: location
-  kind: 'app,linux'
+  kind: 'app,linux,container'
   properties: {
-    serverFarmId: appServicePlan.id
+    serverFarmId: plan.id
     siteConfig: {
-      linuxFxVersion: 'PYTHON|3.11'
+      linuxFxVersion: 'DOCKER|${acrLoginServer}/${imageName}'
+      containerRegistryUseManagedIdentity: false
+      appCommandLine: ''
     }
-    httpsOnly: true
   }
 }
 
-output webAppUrl string = 'https://${webApp.name}.azurewebsites.net'
+output webAppUrl string = webApp.properties.defaultHostName
