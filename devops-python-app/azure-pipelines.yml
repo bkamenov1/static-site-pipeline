@@ -4,7 +4,7 @@ trigger:
       - main
 
 variables:
-  appName: 'my-flask-app-123'
+  appName: 'my-flask-app-123-$(Build.BuildId)'
   imageName: 'myflaskapp:v1'
   acrLoginServer: 'myacrboyan123.azurecr.io'
   resourceGroupName: 'devops-rg' 
