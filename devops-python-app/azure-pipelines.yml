@@ -13,6 +13,14 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- script: |
+    echo "Build.SourcesDirectory: $(Build.SourcesDirectory)"
+    pwd
+    ls -l
+    ls -l $(Build.SourcesDirectory)
+    ls -l $(Build.SourcesDirectory)/static-site-pipeline/devops-python-app
+  displayName: 'Debug folder structure'
+
 - task: AzureCLI@2
   inputs:
     azureSubscription: 'service-connection'
